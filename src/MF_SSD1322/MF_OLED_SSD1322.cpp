@@ -36,106 +36,211 @@ void MF_OLED_SSD1322::drawRol()
 {
     oled.setFont(u8g2_font_courB12_tf);
     oled.drawStr(6, 15, "ROL");
-}
+} // end of drawRol method
 
 void MF_OLED_SSD1322::drawHdg()
 {
     oled.setFont(u8g2_font_courB12_tf);
     oled.drawStr(6, 15, "HDG");
-}
+} // end of drawHdg method
 
 void MF_OLED_SSD1322::drawLvlLat()
 {
     oled.setFont(u8g2_font_courB12_tf);
     oled.drawStr(6, 15, "LVL");
-}
+} // end of drawLvlLat method
 
 void MF_OLED_SSD1322::drawLvlVer()
 {
     oled.setFont(u8g2_font_courB12_tf);
     oled.drawStr(56, 15, "LVL");
-}
+} // end of drawLvlVer method
 
 void MF_OLED_SSD1322::drawVs()
 {
     oled.setFont(u8g2_font_courB12_tf);
     oled.drawStr(56, 15, "VS"); // if VS mode is on, print "VS"
-}
+} // end of drawVs method
 
 void MF_OLED_SSD1322::drawFpm()
 {
     oled.setFont(u8g2_font_courB08_tf); // choose a suitable font
     oled.drawStr(140, 25, "FPM");       // if VS mode is on print "FPM" in a smaller font below the VS value display
     oled.setFont(u8g2_font_courB12_tf); // choose a suitable font
-}
+} // end of drawFpm method
 
 void MF_OLED_SSD1322::drawIas()
 {
     oled.setFont(u8g2_font_courB12_tf); // choose a suitable font
     oled.drawStr(56, 15, "IAS");        // if IAS mode is on, print "IAS"
-}
+} // end of drawIas method
 
 void MF_OLED_SSD1322::drawKts()
 {
     oled.setFont(u8g2_font_courB08_tf); // choose a suitable font
     oled.drawStr(140, 25, "KTS");       // if IAS mode is on, print "KTS"
     oled.setFont(u8g2_font_courB12_tf); // choose a suitable font
-}
+} // end of drawKts method
 
 void MF_OLED_SSD1322::drawSmallVor()
 {
     oled.setFont(u8g2_font_courB08_tf); // choose a suitable font
     oled.drawStr(6, 57, "VOR");         // if VS mode is on, print "VS"
-}
+} // end of drawSmallVor method
 
 void MF_OLED_SSD1322::drawBigVor()
 {
     oled.setFont(u8g2_font_courB12_tf); // choose a suitable font
     oled.drawStr(6, 15, "VOR");         // if IAS mode is on, print "IAS"
-}
+} // end of drawBigVor method
 
 void MF_OLED_SSD1322::drawSmallAlts()
 {
     oled.setFont(u8g2_font_courB08_tf); // choose a suitable font
     oled.drawStr(56, 57, "ALTS");       // if ALT mode is on, print "ALTS"
     oled.setFont(u8g2_font_courB12_tf); // choose a suitable font
-}
+} // end of drawSmallAlts method
 
 void MF_OLED_SSD1322::drawBigAlts()
 {
     oled.drawStr(56, 15, "ALTS"); // if ALTS mode is on, print "ALTS"
-}
+} // end of drawBigAlts method
 
 void MF_OLED_SSD1322::drawSmallFt()
 {
     oled.setFont(u8g2_font_courB08_tf); // choose a suitable font
     oled.drawStr(150, 25, "FT");        // if ALTS mode is on, print "FT"
     oled.setFont(u8g2_font_courB12_tf); // choose a suitable font
-}
+} // end of drawSmallFt method
 
 void MF_OLED_SSD1322::drawSmallAlt()
 {
     oled.setFont(u8g2_font_courB08_tf); // choose a suitable font
     oled.drawStr(56, 57, "ALT");        // if ALTS mode is on, print "ALT"
     oled.setFont(u8g2_font_courB12_tf); // choose a suitable font
-}
+} // end of drawSmallAlt method
 
 void MF_OLED_SSD1322::drawBigAlt()
 {
     oled.setFont(u8g2_font_courB12_tf); // choose a suitable font
     oled.drawStr(56, 15, "ALT");        // if ALT mode is on, print "ALT"
-}
+} // end of drawBigAlt method
 
 void MF_OLED_SSD1322::drawBigGps()
 {
     oled.setFont(u8g2_font_courB12_tf); // choose a suitable font
     oled.drawStr(6, 15, "GPS");         // if ALT mode is on, print "ALT"
-}
+} // end of drawBigGps method
+
+String MF_OLED_SSD1322::prepareData(const char *string)
+{
+    String mf_data = string;
+
+    return mf_data;
+
+} // end of prepareData method
+
+bool MF_OLED_SSD1322::fdOn(String mf_data)
+{
+    if (mf_data.charAt(0) == '1') {
+        return true;
+    }
+
+    else {
+        return false;
+    }
+} // end of fdOn method
+
+bool MF_OLED_SSD1322::hdgOn(String mf_data)
+{
+    if (mf_data.charAt(2) == '1') {
+        return true;
+    }
+
+    else {
+        return false;
+    }
+} // end of hdgOn method
+
+bool MF_OLED_SSD1322::vsOn(String mf_data)
+{
+    if (mf_data.charAt(4) == '1') {
+        return true;
+    }
+
+    else {
+        return false;
+    }
+} // end of vsOn method
+
+bool MF_OLED_SSD1322::iasOn(String mf_data)
+{
+    if (mf_data.charAt(12) == '1') {
+        return true;
+    }
+
+    else {
+        return false;
+    }
+} // end of iasOn method
+
+bool MF_OLED_SSD1322::altOn(String mf_data)
+{
+    if (mf_data.charAt(32) == '1') {
+        return true;
+    }
+
+    else {
+        return false;
+    }
+} // end of altOn method
+
+bool MF_OLED_SSD1322::lvlOn(String mf_data)
+{
+    if (mf_data.charAt(34) == '1') {
+        return true;
+    }
+
+    else {
+        return false;
+    }
+} // end of lvlOn method
+
+bool MF_OLED_SSD1322::vorOn(String mf_data)
+{
+    if (mf_data.charAt(36) == '1') {
+        return true;
+    }
+
+    else {
+        return false;
+    }
+} // end of vorOn method
+
+bool MF_OLED_SSD1322::gpsNavOn(String mf_data)
+{
+    if (mf_data.charAt(38) == '1') {
+        return true;
+    }
+
+    else {
+        return false;
+    }
+} // end of gpsNavOn method
 
 void MF_OLED_SSD1322::display(const char *string)
 {
     // prepare data
-    String mf_data = string;
+    String mf_data = prepareData(string);
+    bool   fdMode  = fdOn(mf_data);
+    bool   hdgMode = hdgOn(mf_data);
+    bool   vsMode  = vsOn(mf_data);
+    bool   iasMode = iasOn(mf_data);
+    bool   altMode = altOn(mf_data);
+    bool   lvlMode = lvlOn(mf_data);
+    bool   vorMode = vorOn(mf_data);
+    bool   gpsMode = gpsNavOn(mf_data);
+
     // prepare VS data
     String vsString = mf_data.substring(6, 11); // takes vs from mf_data String object
     int    vsInt;
