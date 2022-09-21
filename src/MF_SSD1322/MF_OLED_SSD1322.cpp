@@ -2,13 +2,30 @@
 #include "mobiflight.h"
 #include <Arduino.h>
 
+String mf_data = cmdMessenger.readStringArg();
+
 void MF_OLED_SSD1322::begin()
 {
     oled.begin();
-    oled.setFont(u8g2_font_courB12_tf);   // choose a suitable font
-    oled.drawStr(2, 10, "Welcome to MF"); // write something to the internal memory
+    oled.setFont(u8g2_font_profont22_mf); // choose a suitable font
+    oled.drawStr(5, 10, "Welcome to MF"); // write something to the internal memory
     oled.sendBuffer();
     oled.clearBuffer();
+
+    // loading screen
+    int i = 0;
+    for (i = 0; i < 10; i++) {
+        oled.drawStr(100, 15, "GFC600");
+        oled.sendBuffer();
+        delay(500);
+    }
+
+    refresh();
+    oled.drawStr(100, 15, "Bar");
+    oled.sendBuffer();
+    delay(1000);
+    refresh();
+    oled.drawStr(100, 25, cmdMessenger.readStringArg());
 }
 
 void MF_OLED_SSD1322::refresh()
@@ -140,7 +157,7 @@ String MF_OLED_SSD1322::prepareData(const char *string)
 
 } // end of prepareData method
 
-bool MF_OLED_SSD1322::fdOn(String mf_data)
+bool MF_OLED_SSD1322::fdOn()
 {
     if (mf_data.charAt(0) == '1') {
         return true;
@@ -151,7 +168,7 @@ bool MF_OLED_SSD1322::fdOn(String mf_data)
     }
 } // end of fdOn method
 
-bool MF_OLED_SSD1322::hdgOn(String mf_data)
+bool MF_OLED_SSD1322::hdgOn()
 {
     if (mf_data.charAt(2) == '1') {
         return true;
@@ -162,7 +179,7 @@ bool MF_OLED_SSD1322::hdgOn(String mf_data)
     }
 } // end of hdgOn method
 
-bool MF_OLED_SSD1322::vsOn(String mf_data)
+bool MF_OLED_SSD1322::vsOn()
 {
     if (mf_data.charAt(4) == '1') {
         return true;
@@ -173,7 +190,7 @@ bool MF_OLED_SSD1322::vsOn(String mf_data)
     }
 } // end of vsOn method
 
-bool MF_OLED_SSD1322::iasOn(String mf_data)
+bool MF_OLED_SSD1322::iasOn()
 {
     if (mf_data.charAt(12) == '1') {
         return true;
@@ -184,7 +201,7 @@ bool MF_OLED_SSD1322::iasOn(String mf_data)
     }
 } // end of iasOn method
 
-bool MF_OLED_SSD1322::altOn(String mf_data)
+bool MF_OLED_SSD1322::altOn()
 {
     if (mf_data.charAt(32) == '1') {
         return true;
@@ -195,7 +212,7 @@ bool MF_OLED_SSD1322::altOn(String mf_data)
     }
 } // end of altOn method
 
-bool MF_OLED_SSD1322::lvlOn(String mf_data)
+bool MF_OLED_SSD1322::lvlOn()
 {
     if (mf_data.charAt(34) == '1') {
         return true;
@@ -206,7 +223,7 @@ bool MF_OLED_SSD1322::lvlOn(String mf_data)
     }
 } // end of lvlOn method
 
-bool MF_OLED_SSD1322::vorOn(String mf_data)
+bool MF_OLED_SSD1322::vorOn()
 {
     if (mf_data.charAt(36) == '1') {
         return true;
@@ -217,7 +234,7 @@ bool MF_OLED_SSD1322::vorOn(String mf_data)
     }
 } // end of vorOn method
 
-bool MF_OLED_SSD1322::gpsNavOn(String mf_data)
+bool MF_OLED_SSD1322::gpsNavOn()
 {
     if (mf_data.charAt(38) == '1') {
         return true;
@@ -228,18 +245,34 @@ bool MF_OLED_SSD1322::gpsNavOn(String mf_data)
     }
 } // end of gpsNavOn method
 
+void MF_OLED_SSD1322::flash(const char *modeName)
+{
+    int i = 0;
+    while (i < 10) {
+
+        oled.drawStr(2, 10, modeName);
+        oled.sendBuffer();
+        delay(500);
+        oled.clearBuffer();
+        oled.drawStr(2, 10, "");
+        oled.sendBuffer();
+        delay(500);
+        i++;
+    }
+}
+
 void MF_OLED_SSD1322::display(const char *string)
 {
     // prepare data
-    String mf_data = prepareData(string);
-    bool   fdMode  = fdOn(mf_data);
-    bool   hdgMode = hdgOn(mf_data);
-    bool   vsMode  = vsOn(mf_data);
-    bool   iasMode = iasOn(mf_data);
-    bool   altMode = altOn(mf_data);
-    bool   lvlMode = lvlOn(mf_data);
-    bool   vorMode = vorOn(mf_data);
-    bool   gpsMode = gpsNavOn(mf_data);
+
+    bool fdMode  = fdOn();
+    bool hdgMode = hdgOn();
+    bool vsMode  = vsOn();
+    bool iasMode = iasOn();
+    bool altMode = altOn();
+    bool lvlMode = lvlOn();
+    bool vorMode = vorOn();
+    bool gpsMode = gpsNavOn();
 
     // prepare VS data
     String vsString = mf_data.substring(6, 11); // takes vs from mf_data String object
