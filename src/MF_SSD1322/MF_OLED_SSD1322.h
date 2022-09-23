@@ -40,4 +40,6 @@ public:
     void drawBigAlt();
     void drawBigGps();
     void flash(const char *modeName);
+    void drawSmallLoc();
+    void drawSmallGps();
 };

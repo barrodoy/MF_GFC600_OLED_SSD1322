@@ -135,6 +135,20 @@ void MF_OLED_SSD1322::drawBigGps()
     oled.drawStr(6, 15, "GPS");         // if ALT mode is on, print "ALT"
 } // end of drawBigGps method
 
+void MF_OLED_SSD1322::drawSmallLoc()
+{
+    oled.setFont(u8g2_font_courB08_tf); // choose a suitable font
+    oled.drawStr(6, 57, "LOC");         // if LOC mode is Armed, print "LOC"
+    oled.setFont(u8g2_font_courB12_tf); // choose a suitable font
+} // end of drawSmallLoc method
+
+void MF_OLED_SSD1322::drawSmallGps()
+{
+    oled.setFont(u8g2_font_courB08_tf); // choose a suitable font
+    oled.drawStr(6, 57, "GPS");         // if GPS mode is Armed, print "GPS"
+    oled.setFont(u8g2_font_courB12_tf); // choose a suitable font
+} // end of drawSmallLoc method
+
 void MF_OLED_SSD1322::flash(const char *modeName)
 {
     int i = 0;
@@ -173,6 +187,14 @@ void MF_OLED_SSD1322::display(char *string)
     int   lvl       = atoi(strtok(NULL, "|"));   // MF string - J
     int   rol       = atoi(strtok(NULL, "|"));   // MF string - K
     int   pit       = atoi(strtok(NULL, "|"));   // MF string - L
+    int   gps       = atoi(strtok(NULL, "|"));   // MF string - M
+    int   loc       = atoi(strtok(NULL, "|"));   // MF string - N
+
+    bool navVORArmed  = hdg && nav && !gps && !loc;
+    bool navGPSArmed  = hdg && nav && gps;
+    bool navLOCArmed  = hdg && nav && !gps && loc;
+    bool navGPSActive = !hdg && nav && gps;
+    bool navVORActive = !hdg && nav && !gps && !loc;
 
     oled.clearBuffer();
 
@@ -186,6 +208,34 @@ void MF_OLED_SSD1322::display(char *string)
         drawVs();
         oled.drawStr(90, 15, vsValStr);
         drawFpm();
+    }
+
+    if (ias) {
+        drawIas();
+        oled.drawStr(90, 15, iasValStr);
+        drawKts();
+    }
+
+    /*
+LATERAL MODES DISPLAY
+*/
+
+    if (hdg) {
+        drawHdg();
+    }
+
+    if (navVORArmed) {
+        drawHdg();
+        drawSmallVor();
+    }
+
+    if (navGPSArmed) {
+        drawHdg();
+        drawSmallGps();
+    }
+
+    if (navGPSActive) {
+        drawBigGps();
     }
 
     // push data to display
