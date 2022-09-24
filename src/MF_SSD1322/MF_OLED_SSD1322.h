@@ -23,6 +23,7 @@ public:
     void detach();
     void display(char *string);
     void refresh();
+    void drawPit();
     void drawRol();
     void drawHdg();
     void drawLvlLat();
@@ -42,4 +43,6 @@ public:
     void flash(const char *modeName);
     void drawSmallLoc();
     void drawSmallGps();
+    void setLargeFont();
+    void setSmallFont();
 };
