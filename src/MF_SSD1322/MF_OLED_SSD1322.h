@@ -45,4 +45,7 @@ public:
     void drawSmallGps();
     void setLargeFont();
     void setSmallFont();
+    void drawSmallVapp();
+    void setSymbolsFont();
+    void drawBigGp();
 };
