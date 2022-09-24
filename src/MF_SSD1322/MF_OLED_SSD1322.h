@@ -48,4 +48,5 @@ public:
     void drawSmallVapp();
     void setSymbolsFont();
     void drawBigGp();
+    void drawBigPft();
 };

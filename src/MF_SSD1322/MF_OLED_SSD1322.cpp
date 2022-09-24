@@ -2,8 +2,6 @@
 #include "mobiflight.h"
 #include <Arduino.h>
 
-String mf_data = cmdMessenger.readStringArg();
-
 void MF_OLED_SSD1322::begin()
 {
     oled.begin();
@@ -183,6 +181,13 @@ void MF_OLED_SSD1322::drawBigGp()
     oled.drawStr(56, 15, "GP"); // if ALTS mode is on, print "ALTS"
 } // end of drawBigGP method
 
+void MF_OLED_SSD1322::drawBigPft()
+{
+    setLargeFont();
+    oled.drawStr(230, 15, "PFT");
+    delay(500);
+}
+
 void MF_OLED_SSD1322::flash(const char *modeName)
 {
 
@@ -228,7 +233,7 @@ void MF_OLED_SSD1322::display(char *string)
     int   indAltValInt = atoi(indAltValStr);
     int   vorReception = atoi(strtok(NULL, "|"));
     int   avionics     = atoi(strtok(NULL, "|")); // MF string - R
-    int   hdgAsInit    = atoi(strtok(NULL, "|")); // MF string - S
+    int   initDone     = atoi(strtok(NULL, "|")); // MF string - S
 
     /*
 Some AP logic
@@ -244,127 +249,139 @@ Some AP logic
 
     oled.clearBuffer(); // refresh the display
 
-    if (avionics) {
+    if (avionics && !initDone) {
+        oled.setFont(u8g2_font_profont22_mf);
+        oled.drawStr(92, 15, "GFC600");
+        oled.setFont(u8g2_font_profont15_mf);
+        oled.drawStr(40, 28, "WITH ELECTRONIC STABILITY");
+        oled.drawStr(79, 42, "AND PROTECTION");
+        oled.setFont(u8g2_font_profont11_mf);
+        oled.drawStr(1, 55, "↙ CONT");
+
+    }
+
+    else if (avionics && initDone) {
         oled.drawLine(52, 11, 52, 57);   // draws the boundary line of the lateral modes
         oled.drawLine(162, 11, 162, 57); // draws the boundary line of the vertical modes
-        oled.drawStr(230, 15, "PFT");
-        delay(500);
-    }
 
-    // draw Init screen
+        /*
+ VERTICAL MODES DISPLAY
+ */
+        if (vs) { // VS MODE
+            drawVs();
 
-    /*
-    VERTICAL MODES DISPLAY
-    */
-    if (vs) {
-        drawVs();
+            if (vsValInt < 0 && vsValInt > -999) {
+                oled.setCursor(136, 15);
+                setLargeFont();
+                oled.print(vsValInt * -(1));
+                setSymbolsFont();
+                oled.drawUTF8(128, 15, "↓");
+            }
 
-        if (vsValInt < 0 && vsValInt > -999) {
-            oled.setCursor(136, 15);
-            setLargeFont();
-            oled.print(vsValInt * -(1));
-            setSymbolsFont();
-            oled.drawUTF8(128, 15, "↓");
+            else if (vsValInt < -999) {
+                oled.setCursor(130, 15);
+                setLargeFont();
+                oled.print(vsValInt * -(1));
+                setSymbolsFont();
+                oled.drawUTF8(122, 15, "↓");
+            }
+
+            else if (vsValInt > 0 && vsValInt < 999) {
+                oled.setCursor(136, 15);
+                setLargeFont();
+                oled.print(vsValInt);
+                setSymbolsFont();
+                oled.drawUTF8(128, 15, "↑");
+            }
+
+            else if (vsValInt > 999) {
+                oled.setCursor(130, 15);
+                setLargeFont();
+                oled.print(vsValInt);
+                setSymbolsFont();
+                oled.drawUTF8(122, 15, "↑");
+            }
+
+            else if (vsValInt == 0) {
+                setLargeFont();
+                oled.drawStr(114, 15, vsValStr);
+            }
+            drawFpm();
+            drawSmallAlts();
         }
 
-        else if (vsValInt < -999) {
-            oled.setCursor(130, 15);
-            setLargeFont();
-            oled.print(vsValInt * -(1));
-            setSymbolsFont();
-            oled.drawUTF8(122, 15, "↓");
+        if (ias) { // IAS/FLC MODE
+            drawIas();
+            oled.drawStr(136, 15, iasValStr);
+            drawKts();
+            drawSmallAlts();
         }
 
-        else if (vsValInt > 0 && vsValInt < 999) {
-            oled.setCursor(136, 15);
-            setLargeFont();
-            oled.print(vsValInt);
-            setSymbolsFont();
-            oled.drawUTF8(128, 15, "↑");
+        if (pit) { // PITCH MODE
+            drawPit();
+            drawSmallAlts();
         }
 
-        else if (vsValInt > 999) {
-            oled.setCursor(130, 15);
-            setLargeFont();
-            oled.print(vsValInt);
-            setSymbolsFont();
-            oled.drawUTF8(122, 15, "↑");
+        if (alt && !alts) { // ALT HOLD MODE
+            drawBigAlt();
+            oled.drawStr(120, 15, indAltValStr);
+            drawSmallFt();
         }
 
-        else if (vsValInt == 0) {
-            setLargeFont();
-            oled.drawStr(114, 15, vsValStr);
-        }
-        drawFpm();
-        drawSmallAlts();
-    }
-
-    if (ias) {
-        drawIas();
-        oled.drawStr(136, 15, iasValStr);
-        drawKts();
-        drawSmallAlts();
-    }
-
-    if (pit) {
-        drawPit();
-        drawSmallAlts();
-    }
-
-    if (alt && !alts) {
-        drawBigAlt();
-        oled.drawStr(120, 15, indAltValStr);
-    }
-
-    if (alts) {
-        drawBigAlts();
-        oled.drawStr(120, 15, altValStr);
-        drawSmallAlt();
-    }
-
-    if (navGpsGp) {
-        drawBigGp();
-    }
-
-    /*
-    LATERAL MODES DISPLAY
-    */
-
-    if (rol) {
-        drawRol();
-        if (navVorArmed) {
-            drawSmallVor();
+        if (alts) { // ALT CAPTURE MODE
+            drawBigAlts();
+            oled.drawStr(120, 15, altValStr);
+            drawSmallAlt();
         }
 
-        if (navGpsArmed) {
-            drawSmallGps();
+        if (navGpsGp) { // GPS GP MODE
+            drawBigGp();
         }
 
-        if (navVappArmed) {
-            drawSmallVapp();
-        }
-    }
-    if (hdg) {
-        drawHdg();
-        if (navVorArmed) {
-            drawSmallVor();
-        }
-        if (navGpsArmed) {
-            drawSmallGps();
+        if (lvl) {
+            drawLvlVer();
         }
 
-        if (navVappArmed) {
-            drawSmallVapp();
+        /*
+        LATERAL MODES DISPLAY
+        */
+
+        if (rol) { // ROL MODE
+            drawRol();
+            if (navVorArmed) {
+                drawSmallVor();
+            }
+
+            if (navGpsArmed) {
+                drawSmallGps();
+            }
+
+            if (navVappArmed) {
+                drawSmallVapp();
+            }
         }
-    }
+        if (hdg) { // HDG MODE
+            drawHdg();
+            if (navVorArmed) {
+                drawSmallVor();
+            }
+            if (navGpsArmed) {
+                drawSmallGps();
+            }
 
-    if (navGpsActive) {
-        drawBigGps();
-    }
+            if (navVappArmed) {
+                drawSmallVapp();
+            }
+        }
 
-    if (navVorActive) {
-        drawBigVor();
-    }
+        if (navGpsActive) {
+            drawBigGps();
+        }
+
+        if (navVorActive) {
+            drawBigVor();
+        }
+    } // end of avionics and init done
 
     // push data to display
     oled.sendBuffer();
