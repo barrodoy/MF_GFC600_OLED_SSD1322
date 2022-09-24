@@ -249,7 +249,7 @@ Some AP logic
 
     oled.clearBuffer(); // refresh the display
 
-    if (avionics && !initDone) {
+    if (avionics && !initDone) { // init screen
         oled.setFont(u8g2_font_profont22_mf);
         oled.drawStr(92, 15, "GFC600");
         oled.setFont(u8g2_font_profont15_mf);
