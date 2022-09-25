@@ -188,6 +188,19 @@ void MF_OLED_SSD1322::drawBigPft()
     delay(500);
 }
 
+void MF_OLED_SSD1322::drawInitScreen()
+{
+    oled.setFont(u8g2_font_tenfatguys_tf);
+    oled.drawStr(92, 15, "GFC600");
+    oled.setFont(u8g2_font_tenthinguys_tr);
+    oled.drawStr(34, 28, "WITH ELECTRONIC STABILITY");
+    oled.drawStr(79, 42, "AND PROTECTION");
+    oled.setFont(u8g2_font_profont15_mf);
+    oled.drawStr(6, 56, "CONT");
+    setSymbolsFont();
+    oled.drawStr(1, 56, "↙ ");
+}
+
 void MF_OLED_SSD1322::flash(const char *modeName)
 {
 
@@ -250,29 +263,20 @@ Some AP logic
     oled.clearBuffer(); // refresh the display
 
     if (avionics && !initDone) { // init screen
-        oled.setFont(u8g2_font_profont22_mf);
-        oled.drawStr(92, 15, "GFC600");
-        oled.setFont(u8g2_font_ImpactBits_tr);
-        oled.drawStr(40, 28, "WITH ELECTRONIC STABILITY");
-        oled.drawStr(79, 42, "AND PROTECTION");
-        oled.setFont(u8g2_font_profont15_mf);
-        oled.drawStr(6, 56, "CONT");
-        setSymbolsFont();
-        oled.drawStr(1, 56, "↙ ");
+        drawInitScreen();
+    } // end of init
 
-    }
-
-    else if (avionics && initDone) {
+    else if (avionics && initDone) {     // If avionics are on and init process is done
         oled.drawLine(52, 11, 52, 57);   // draws the boundary line of the lateral modes
         oled.drawLine(162, 11, 162, 57); // draws the boundary line of the vertical modes
 
         /*
- VERTICAL MODES DISPLAY
- */
+    VERTICAL MODES DISPLAY
+        */
         if (vs) { // VS MODE
             drawVs();
 
-            if (vsValInt < 0 && vsValInt > -999) {
+            if (vsValInt < 0 && vsValInt > -999) { // 3 digits negative VS value
                 oled.setCursor(136, 15);
                 setLargeFont();
                 oled.print(vsValInt * -(1));
@@ -280,7 +284,7 @@ Some AP logic
                 oled.drawUTF8(128, 15, "↓");
             }
 
-            else if (vsValInt < -999) {
+            else if (vsValInt < -999) { // 4 digits negative VS value
                 oled.setCursor(130, 15);
                 setLargeFont();
                 oled.print(vsValInt * -(1));
@@ -288,7 +292,7 @@ Some AP logic
                 oled.drawUTF8(122, 15, "↓");
             }
 
-            else if (vsValInt > 0 && vsValInt < 999) {
+            else if (vsValInt > 0 && vsValInt < 999) { // 3 digits positive VS value
                 oled.setCursor(136, 15);
                 setLargeFont();
                 oled.print(vsValInt);
@@ -296,7 +300,7 @@ Some AP logic
                 oled.drawUTF8(128, 15, "↑");
             }
 
-            else if (vsValInt > 999) {
+            else if (vsValInt > 999) { // 4 digits positive VS value
                 oled.setCursor(130, 15);
                 setLargeFont();
                 oled.print(vsValInt);
@@ -304,7 +308,7 @@ Some AP logic
                 oled.drawUTF8(122, 15, "↑");
             }
 
-            else if (vsValInt == 0) {
+            else if (vsValInt == 0) { // if VS is 0, no arrow needed
                 setLargeFont();
                 oled.drawStr(114, 15, vsValStr);
             }
@@ -340,7 +344,7 @@ Some AP logic
             drawBigGp();
         }
 
-        if (lvl) {
+        if (lvl) { // LVL vertical mode
             drawLvlVer();
         }
 
@@ -350,37 +354,37 @@ Some AP logic
 
         if (rol) { // ROL MODE
             drawRol();
-            if (navVorArmed) {
+            if (navVorArmed) { // VOR navigation is armed in ROL mode
                 drawSmallVor();
             }
 
-            if (navGpsArmed) {
+            if (navGpsArmed) { // GPS navigation is armed in ROL mode
                 drawSmallGps();
             }
 
-            if (navVappArmed) {
+            if (navVappArmed) { // APR is armed in ROL mode
                 drawSmallVapp();
             }
         }
         if (hdg) { // HDG MODE
             drawHdg();
-            if (navVorArmed) {
+            if (navVorArmed) { // VOR navigation is armed in HDG mode
                 drawSmallVor();
             }
-            if (navGpsArmed) {
+            if (navGpsArmed) { // GPS navigation is armed in HDG mode
                 drawSmallGps();
             }
 
-            if (navVappArmed) {
+            if (navVappArmed) { // APR navigation is armed in HDG mode
                 drawSmallVapp();
             }
         }
 
-        if (navGpsActive) {
+        if (navGpsActive) { // GPS navigation is active
             drawBigGps();
         }
 
-        if (navVorActive) {
+        if (navVorActive) { // VOR navigation is active
             drawBigVor();
         }
     } // end of avionics and init done

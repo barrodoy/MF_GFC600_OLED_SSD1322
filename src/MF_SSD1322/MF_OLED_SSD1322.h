@@ -16,7 +16,7 @@ public:
     MF_OLED_SSD1322(const u8g2_cb_t *rotation, uint8_t cs = 10, uint8_t dc = 9, uint8_t reset = 8)
         : oled(U8G2_R0, cs, dc, reset){};
 
-     // ************************************
+    // ************************************
     // **** GLOBAL & UNIVERSAL METHODS ****
     // ********
     void begin();
@@ -50,5 +50,5 @@ public:
     void setSymbolsFont();
     void drawBigGp();
     void drawBigPft();
-    void drawInitMessage();
+    void drawInitScreen();
 };
