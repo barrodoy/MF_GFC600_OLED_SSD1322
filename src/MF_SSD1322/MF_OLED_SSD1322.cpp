@@ -201,6 +201,24 @@ void MF_OLED_SSD1322::drawInitScreen()
     oled.drawStr(1, 56, "↙ ");
 }
 
+void MF_OLED_SSD1322::drawNegative3DigitsVs(int vsValInt)
+{
+    oled.setCursor(136, 15);
+    setLargeFont();
+    oled.print(vsValInt * -(1));
+    setSymbolsFont();
+    oled.drawUTF8(128, 15, "↓");
+}
+
+void MF_OLED_SSD1322::drawNegative4DigitsVs(int vsValInt)
+{
+    oled.setCursor(130, 15);
+    setLargeFont();
+    oled.print(vsValInt * -(1));
+    setSymbolsFont();
+    oled.drawUTF8(122, 15, "↓");
+}
+
 void MF_OLED_SSD1322::flash(const char *modeName)
 {
 
@@ -246,7 +264,7 @@ void MF_OLED_SSD1322::display(char *string)
     int   indAltValInt = atoi(indAltValStr);
     int   vorReception = atoi(strtok(NULL, "|"));
     int   avionics     = atoi(strtok(NULL, "|")); // MF string - R
-    int   initDone     = atoi(strtok(NULL, "|")); // MF string - S
+    int   initScreen   = atoi(strtok(NULL, "|")); // MF string - S
 
     /*
 Some AP logic
@@ -260,15 +278,26 @@ Some AP logic
     bool navGpsGp     = gps && apr && !pit;
     bool altsActive   = (alt || ias || vs) && alts;
 
+    bool negative3DigitsVs = vsValInt < 0 && vsValInt > -999;
+    bool negative4DigitsVs = vsValInt < -999;
+    bool positive3DigitsVs = vsValInt > 0 && vsValInt < 999;
+    bool positive4DigitsVS = vsValInt > 999;
+    bool vsZero            = vsValInt == 0;
+
     oled.clearBuffer(); // refresh the display
 
-    if (avionics && !initDone) { // init screen
+    if (!avionics) {
+        initSeq = 0;
+    }
+
+    if (avionics && !initScreen) { // init screen
         drawInitScreen();
     } // end of init
 
-    else if (avionics && initDone) {     // If avionics are on and init process is done
+    else if (avionics && initScreen) {   // If avionics are on and init process is done
         oled.drawLine(52, 11, 52, 57);   // draws the boundary line of the lateral modes
         oled.drawLine(162, 11, 162, 57); // draws the boundary line of the vertical modes
+        initSeq = 1;
 
         /*
     VERTICAL MODES DISPLAY
@@ -276,20 +305,13 @@ Some AP logic
         if (vs) { // VS MODE
             drawVs();
 
-            if (vsValInt < 0 && vsValInt > -999) { // 3 digits negative VS value
-                oled.setCursor(136, 15);
-                setLargeFont();
-                oled.print(vsValInt * -(1));
-                setSymbolsFont();
-                oled.drawUTF8(128, 15, "↓");
+            if (negative3DigitsVs) {
+                drawNegative3DigitsVs(vsValInt);
             }
 
-            else if (vsValInt < -999) { // 4 digits negative VS value
-                oled.setCursor(130, 15);
-                setLargeFont();
-                oled.print(vsValInt * -(1));
-                setSymbolsFont();
-                oled.drawUTF8(122, 15, "↓");
+            else if (negative4DigitsVs) { // 4 digits negative VS value
+                drawNegative4DigitsVs(vsValInt);
+
             }
 
             else if (vsValInt > 0 && vsValInt < 999) { // 3 digits positive VS value

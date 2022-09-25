@@ -8,7 +8,8 @@ private:
     int8_t _CS;
     int8_t _DC;
     int8_t _RST;
-    bool   _initialised;
+
+    bool _initialised;
 
 public:
     // Constructor
@@ -17,8 +18,9 @@ public:
         : oled(U8G2_R0, cs, dc, reset){};
 
     // ************************************
-    // **** GLOBAL & UNIVERSAL METHODS ****
+    // **** GLOBAL & UNIVERSAL METHODS ***
     // ********
+    int  initSeq;
     void begin();
     void attach(int8_t cs, int8_t dc, int8_t rst);
     void detach();
@@ -51,4 +53,8 @@ public:
     void drawBigGp();
     void drawBigPft();
     void drawInitScreen();
+    void drawNegative3DigitsVs(int vsValInt);
+    void drawNegative4DigitsVs(int vsValInt);
+    void drawPositive3DigitsVs(int vsValInt);
+    void drawPositive4DigitsVs(int vsValInt);
 };
