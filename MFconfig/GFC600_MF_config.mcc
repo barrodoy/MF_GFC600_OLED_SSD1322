@@ -279,7 +279,7 @@
           <value x="401" y="0" />
         </interpolation>
         <preconditions />
-        <transformation active="True" expression="$#-!" substrStart="0" substrEnd="7" />
+        <transformation active="False" expression="$#-!" substrStart="0" substrEnd="7" />
         <configrefs>
           <configref active="True" ref="e496cec8-726d-444c-8e6e-8c823e4760ca" placeholder="#" />
           <configref active="True" ref="1dd42155-b93f-4b60-b993-d740b80abba5" placeholder="!" />
@@ -346,6 +346,18 @@
         <source type="Variable" varType="number" varName="initInput" varExpression="$" />
         <comparison active="False" value="" operand="" ifValue="" elseValue="" />
         <display type="" serial="MobiFlight Mega/ SN-e85-581" trigger="normal" pin="" pinBrightness="255" />
+        <preconditions />
+        <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="e7b57eb2-771a-4a46-8115-7f767cdd4a70">
+      <active>false</active>
+      <description>currentSimTime</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.5.0.0, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="LVAR" Value="" />
+        <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        <display type="" serial="" pin="" pinBrightness="255" />
         <preconditions />
         <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
         <configrefs />

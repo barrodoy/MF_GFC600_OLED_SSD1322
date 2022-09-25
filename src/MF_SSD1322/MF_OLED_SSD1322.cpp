@@ -45,7 +45,7 @@ void MF_OLED_SSD1322::setSmallFont()
 
 void MF_OLED_SSD1322::setSymbolsFont()
 {
-    oled.setFont(u8g2_font_unifont_t_symbols);
+    oled.setFont(u8g2_font_9x15_t_symbols);
 }
 
 void MF_OLED_SSD1322::drawPit()
@@ -252,11 +252,13 @@ Some AP logic
     if (avionics && !initDone) { // init screen
         oled.setFont(u8g2_font_profont22_mf);
         oled.drawStr(92, 15, "GFC600");
-        oled.setFont(u8g2_font_profont15_mf);
+        oled.setFont(u8g2_font_ImpactBits_tr);
         oled.drawStr(40, 28, "WITH ELECTRONIC STABILITY");
         oled.drawStr(79, 42, "AND PROTECTION");
-        oled.setFont(u8g2_font_profont11_mf);
-        oled.drawStr(1, 55, "↙ CONT");
+        oled.setFont(u8g2_font_profont15_mf);
+        oled.drawStr(6, 56, "CONT");
+        setSymbolsFont();
+        oled.drawStr(1, 56, "↙ ");
 
     }
 
