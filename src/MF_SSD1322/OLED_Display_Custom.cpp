@@ -22,7 +22,7 @@ namespace OLED_Display_Custom
             cmdMessenger.sendCmd(kStatus, F("Custom LCD does not fit in Memory!"));
             return;
         }
-        lcd_I2C[cust_LCDs_Registered] = new MF_OLED_SSD1322(U8G2_R0, cs, dc, rst);
+        lcd_I2C[cust_LCDs_Registered] = new MF_OLED_SSD1322(U8G2_R0, 10, 9, 8);
         lcd_I2C[cust_LCDs_Registered]->attach(cs, dc, rst);
         cust_LCDs_Registered++;
 #ifdef DEBUG2CMDMESSENGER

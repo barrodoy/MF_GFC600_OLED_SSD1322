@@ -219,6 +219,53 @@ void MF_OLED_SSD1322::drawNegative4DigitsVs(int vsValInt)
     oled.drawUTF8(122, 15, "↓");
 }
 
+void MF_OLED_SSD1322 ::drawPositive3DigitsVs(int vsValInt)
+{
+    oled.setCursor(136, 15);
+    setLargeFont();
+    oled.print(vsValInt);
+    setSymbolsFont();
+    oled.drawUTF8(128, 15, "↑");
+}
+
+void MF_OLED_SSD1322 ::drawPositive4DigitsVs(int vsValInt)
+{
+    oled.setCursor(130, 15);
+    setLargeFont();
+    oled.print(vsValInt);
+    setSymbolsFont();
+    oled.drawUTF8(122, 15, "↑");
+}
+
+void MF_OLED_SSD1322::drawVsZero(int vsValInt)
+{
+    oled.setCursor(130, 15);
+    setLargeFont();
+    oled.print(vsValInt);
+}
+
+void MF_OLED_SSD1322 ::preFlightTest()
+{
+    setSmallFont();
+    oled.drawStr(220, 15, "PFT");
+    oled.sendBuffer();
+    analogWrite(apRedLed, 255);
+    analogWrite(apGreenLed, 255);
+    analogWrite(apBlueLed, 0);
+    delay(1000);
+    analogWrite(apRedLed, 255);
+    analogWrite(apGreenLed, 0);
+    analogWrite(apBlueLed, 0);
+    delay(1000);
+    analogWrite(apRedLed, 0);
+    analogWrite(apGreenLed, 0);
+    analogWrite(apBlueLed, 0);
+    oled.clearBuffer();              // refresh the display
+    oled.drawLine(52, 11, 52, 57);   // draws the boundary line of the lateral modes
+    oled.drawLine(162, 11, 162, 57); // draws the boundary line of the vertical modes
+    initSeqDone = 1;
+}
+
 void MF_OLED_SSD1322::flash(const char *modeName)
 {
 
@@ -238,33 +285,33 @@ void MF_OLED_SSD1322::display(char *string)
     /*
     Read all AP modes and values from MF LCD string output
     */
-    int   ap           = atoi(strtok(string, "|")); // MF string - #
-    int   fd           = atoi(strtok(NULL, "|"));   // MF string - !
-    int   yd           = atoi(strtok(NULL, "|"));   // MF string - ?
-    int   hdg          = atoi(strtok(NULL, "|"));   // MF string - @
-    int   nav          = atoi(strtok(NULL, "|"));   // MF string - A
-    int   apr          = atoi(strtok(NULL, "|"));   // MF string - B
-    int   bc           = atoi(strtok(NULL, "|"));   // MF string - C
-    int   vs           = atoi(strtok(NULL, "|"));   // MF string - D
-    char *vsValStr     = strtok(NULL, "|");         // //MF string - E. vs value string for display
-    int   vsValInt     = atoi(vsValStr);            // vs value as int for calculations
-    int   ias          = atoi(strtok(NULL, "|"));   // MF string - F
-    char *iasValStr    = strtok(NULL, "|");         // //MF string - G. ias value string for display
-    int   iasValInt    = atoi(iasValStr);           // ias value as int for calculations
-    int   alt          = atoi(strtok(NULL, "|"));   // MF string - H
-    char *altValStr    = strtok(NULL, "|");         // //MF string - I. vs value string for display
-    int   altValInt    = atoi(altValStr);           // ias value as int for calculations
-    int   lvl          = atoi(strtok(NULL, "|"));   // MF string - J
-    int   rol          = atoi(strtok(NULL, "|"));   // MF string - K
-    int   pit          = atoi(strtok(NULL, "|"));   // MF string - L
-    int   gps          = atoi(strtok(NULL, "|"));   // MF string - M
-    int   loc          = atoi(strtok(NULL, "|"));   // MF string - N
-    int   alts         = atoi(strtok(NULL, "|"));   // MF string - O
-    char *indAltValStr = strtok(NULL, "|");         // MF String - P
-    int   indAltValInt = atoi(indAltValStr);
-    int   vorReception = atoi(strtok(NULL, "|"));
-    int   avionics     = atoi(strtok(NULL, "|")); // MF string - R
-    int   initScreen   = atoi(strtok(NULL, "|")); // MF string - S
+    int   ap                = atoi(strtok(string, "|")); // MF string - #
+    int   fd                = atoi(strtok(NULL, "|"));   // MF string - !
+    int   yd                = atoi(strtok(NULL, "|"));   // MF string - ?
+    int   hdg               = atoi(strtok(NULL, "|"));   // MF string - @
+    int   nav               = atoi(strtok(NULL, "|"));   // MF string - A
+    int   apr               = atoi(strtok(NULL, "|"));   // MF string - B
+    int   bc                = atoi(strtok(NULL, "|"));   // MF string - C
+    int   vs                = atoi(strtok(NULL, "|"));   // MF string - D
+    char *vsValStr          = strtok(NULL, "|");         // //MF string - E. vs value string for display
+    int   vsValInt          = atoi(vsValStr);            // vs value as int for calculations
+    int   ias               = atoi(strtok(NULL, "|"));   // MF string - F
+    char *iasValStr         = strtok(NULL, "|");         // //MF string - G. ias value string for display
+    int   iasValInt         = atoi(iasValStr);           // ias value as int for calculations
+    int   alt               = atoi(strtok(NULL, "|"));   // MF string - H
+    char *altValStr         = strtok(NULL, "|");         // //MF string - I. vs value string for display
+    int   altValInt         = atoi(altValStr);           // ias value as int for calculations
+    int   lvl               = atoi(strtok(NULL, "|"));   // MF string - J
+    int   rol               = atoi(strtok(NULL, "|"));   // MF string - K
+    int   pit               = atoi(strtok(NULL, "|"));   // MF string - L
+    int   gps               = atoi(strtok(NULL, "|"));   // MF string - M
+    int   loc               = atoi(strtok(NULL, "|"));   // MF string - N
+    int   alts              = atoi(strtok(NULL, "|"));   // MF string - O
+    char *indAltValStr      = strtok(NULL, "|");         // MF String - P
+    int   indAltValInt      = atoi(indAltValStr);
+    int   vorReception      = atoi(strtok(NULL, "|"));
+    int   avionics          = atoi(strtok(NULL, "|")); // MF string - R
+    int   contButtonPressed = atoi(strtok(NULL, "|")); // MF string - S
 
     /*
 Some AP logic
@@ -281,24 +328,30 @@ Some AP logic
     bool negative3DigitsVs = vsValInt < 0 && vsValInt > -999;
     bool negative4DigitsVs = vsValInt < -999;
     bool positive3DigitsVs = vsValInt > 0 && vsValInt < 999;
-    bool positive4DigitsVS = vsValInt > 999;
+    bool positive4DigitsVs = vsValInt > 999;
     bool vsZero            = vsValInt == 0;
 
     oled.clearBuffer(); // refresh the display
 
     if (!avionics) {
-        initSeq = 0;
+        initSeqDone = 0;
     }
 
-    if (avionics && !initScreen) { // init screen
+    if (avionics && !contButtonPressed) { // init screen
         drawInitScreen();
     } // end of init
 
-    else if (avionics && initScreen) {   // If avionics are on and init process is done
+    else if (avionics && contButtonPressed && !initSeqDone) { // If avionics are on and init process is done
+        oled.drawLine(52, 11, 52, 57);                        // draws the boundary line of the lateral modes
+        oled.drawLine(162, 11, 162, 57);
+        preFlightTest();
+
+    }
+
+    else if (avionics && contButtonPressed && initSeqDone) {
+        oled.clearBuffer();              // refresh the display
         oled.drawLine(52, 11, 52, 57);   // draws the boundary line of the lateral modes
         oled.drawLine(162, 11, 162, 57); // draws the boundary line of the vertical modes
-        initSeq = 1;
-
         /*
     VERTICAL MODES DISPLAY
         */
@@ -314,25 +367,16 @@ Some AP logic
 
             }
 
-            else if (vsValInt > 0 && vsValInt < 999) { // 3 digits positive VS value
-                oled.setCursor(136, 15);
-                setLargeFont();
-                oled.print(vsValInt);
-                setSymbolsFont();
-                oled.drawUTF8(128, 15, "↑");
+            else if (positive3DigitsVs) { // 3 digits positive VS value
+                drawPositive3DigitsVs(vsValInt);
             }
 
-            else if (vsValInt > 999) { // 4 digits positive VS value
-                oled.setCursor(130, 15);
-                setLargeFont();
-                oled.print(vsValInt);
-                setSymbolsFont();
-                oled.drawUTF8(122, 15, "↑");
+            else if (positive4DigitsVs) { // 4 digits positive VS value
+                drawPositive4DigitsVs(vsValInt);
             }
 
-            else if (vsValInt == 0) { // if VS is 0, no arrow needed
-                setLargeFont();
-                oled.drawStr(114, 15, vsValStr);
+            else if (vsZero) { // if VS is 0, no arrow needed
+                drawVsZero(vsValInt);
             }
             drawFpm();
             drawSmallAlts();
