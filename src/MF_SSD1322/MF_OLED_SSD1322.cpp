@@ -239,7 +239,7 @@ void MF_OLED_SSD1322 ::drawPositive4DigitsVs(int vsValInt)
 
 void MF_OLED_SSD1322::drawVsZero(int vsValInt)
 {
-    oled.setCursor(130, 15);
+    oled.setCursor(140, 15);
     setLargeFont();
     oled.print(vsValInt);
 }
@@ -264,6 +264,33 @@ void MF_OLED_SSD1322 ::preFlightTest()
     oled.drawLine(52, 11, 52, 57);   // draws the boundary line of the lateral modes
     oled.drawLine(162, 11, 162, 57); // draws the boundary line of the vertical modes
     initSeqDone = 1;
+}
+
+void MF_OLED_SSD1322::altsFlash()
+{
+    setLargeFont();
+    oled.setDrawColor(1);
+    oled.drawBox(56, 0, 35, 15);
+    oled.setDrawColor(0);
+    oled.drawStr(56, 15, "ALTS");
+    delay(500);
+    oled.setDrawColor(0);
+    oled.drawBox(56, 0, 35, 15);
+    oled.setDrawColor(1);
+    oled.drawStr(56, 15, "ALTS");
+    delay(500);
+    oled.setDrawColor(1);
+    oled.drawBox(56, 0, 35, 15);
+    oled.setDrawColor(0);
+    oled.drawStr(56, 15, "ALTS");
+    delay(500);
+    oled.setDrawColor(0);
+    oled.drawBox(56, 0, 35, 15);
+    oled.setDrawColor(1);
+    oled.drawStr(56, 15, "ALTS");
+    delay(500);
+    altsFlashed = 1;
+    oled.sendBuffer();
 }
 
 void MF_OLED_SSD1322::flash(const char *modeName)
@@ -414,6 +441,10 @@ Some AP logic
             drawLvlVer();
         }
 
+        if (!alts) // resets the ALTS flash flag
+        {
+            altsFlashed = 0;
+        }
         /*
         LATERAL MODES DISPLAY
         */
