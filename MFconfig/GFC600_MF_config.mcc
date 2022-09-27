@@ -34,8 +34,8 @@
         <display type="LcdDisplay" serial="MobiFlight Mega/ SN-e85-581" trigger="normal" address="LcdDisplay">
           <line>#|!|?|@|A|B|C|D|</line>
           <line>EEEEE|F|GGG|H|IIIII|</line>
-          <line>J|K|L|M|N|O|PPPPP|Q|</line>
-          <line>R|S|</line>
+          <line>J|K|L|M|N|PPPPP|Q|</line>
+          <line>R|S|O|</line>
         </display>
         <preconditions />
         <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
@@ -58,11 +58,11 @@
           <configref active="True" ref="a25d030c-5dd2-4c34-8d39-f099e9e445d1" placeholder="L" />
           <configref active="True" ref="d15cb311-5456-492d-b64d-46a1af004326" placeholder="M" />
           <configref active="True" ref="8a4dc790-f60c-467f-afaf-6e5354c70aee" placeholder="N" />
-          <configref active="True" ref="84298d1d-e2f7-4dcb-a033-0706fbd870d6" placeholder="O" />
           <configref active="True" ref="e496cec8-726d-444c-8e6e-8c823e4760ca" placeholder="P" />
           <configref active="True" ref="bf109029-228e-42a6-a905-8917b1f6eca6" placeholder="Q" />
           <configref active="True" ref="424e3296-e09c-40c9-8af0-00229f8788d5" placeholder="R" />
           <configref active="True" ref="76305c50-0b91-4b15-b1c8-9a9dbd0767f5" placeholder="S" />
+          <configref active="True" ref="84298d1d-e2f7-4dcb-a033-0706fbd870d6" placeholder="O" />
         </configrefs>
       </settings>
     </config>
@@ -373,6 +373,45 @@
         <preconditions />
         <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
         <configrefs />
+      </settings>
+    </config>
+    <config guid="4677a916-7e65-4d3d-a878-6e57cd8a974b">
+      <active>true</active>
+      <description>Activate ALT Hold at 50 ft from selected Alt</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.5.0.0, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="LVAR" Value="" />
+        <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        <display type="" serial="MobiFlight Mega/ SN-e85-581" trigger="normal" pin="" pinBrightness="255" />
+        <preconditions>
+          <precondition type="config" active="true" ref="84298d1d-e2f7-4dcb-a033-0706fbd870d6" operand="=" value="1" logic="and" />
+          <precondition type="config" active="true" ref="554c180e-48ad-4a8a-b800-d45b2771f4f6" operand="&lt;" value="51" logic="or" />
+        </preconditions>
+        <transformation active="True" expression="#*!" substrStart="0" substrEnd="7" />
+        <configrefs>
+          <configref active="True" ref="554c180e-48ad-4a8a-b800-d45b2771f4f6" placeholder="#" />
+          <configref active="True" ref="84298d1d-e2f7-4dcb-a033-0706fbd870d6" placeholder="!" />
+        </configrefs>
+      </settings>
+    </config>
+    <config guid="554c180e-48ad-4a8a-b800-d45b2771f4f6">
+      <active>true</active>
+      <description>Indicated Alt - selected Alt</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.5.0.0, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="LVAR" Value="" />
+        <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        <display type="" serial="MobiFlight Mega/ SN-e85-581" trigger="normal" pin="" pinBrightness="255" />
+        <interpolation active="True">
+          <value x="-51" y="0" />
+          <value x="-50" y="1" />
+          <value x="50" y="1" />
+          <value x="51" y="0" />
+        </interpolation>
+        <preconditions />
+        <transformation active="False" expression="#-!" substrStart="0" substrEnd="7" />
+        <configrefs>
+          <configref active="True" ref="e496cec8-726d-444c-8e6e-8c823e4760ca" placeholder="#" />
+          <configref active="True" ref="1dd42155-b93f-4b60-b993-d740b80abba5" placeholder="!" />
+        </configrefs>
       </settings>
     </config>
   </outputs>

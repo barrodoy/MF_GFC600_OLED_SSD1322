@@ -268,29 +268,27 @@ void MF_OLED_SSD1322 ::preFlightTest()
 
 void MF_OLED_SSD1322::altsFlash()
 {
-    setLargeFont();
-    oled.setDrawColor(1);
-    oled.drawBox(56, 0, 35, 15);
-    oled.setDrawColor(0);
-    oled.drawStr(56, 15, "ALTS");
-    delay(500);
-    oled.setDrawColor(0);
-    oled.drawBox(56, 0, 35, 15);
-    oled.setDrawColor(1);
-    oled.drawStr(56, 15, "ALTS");
-    delay(500);
-    oled.setDrawColor(1);
-    oled.drawBox(56, 0, 35, 15);
-    oled.setDrawColor(0);
-    oled.drawStr(56, 15, "ALTS");
-    delay(500);
-    oled.setDrawColor(0);
-    oled.drawBox(56, 0, 35, 15);
-    oled.setDrawColor(1);
-    oled.drawStr(56, 15, "ALTS");
-    delay(500);
+    uint8_t count = 0;
+
+    while (count < 4) {
+        setLargeFont();
+        oled.setDrawColor(1);
+        oled.drawBox(56, 0, 35, 15);
+        oled.setDrawColor(0);
+        oled.drawStr(56, 15, "ALTS");
+        oled.sendBuffer();
+        delay(500);
+
+        oled.setDrawColor(0);
+        oled.drawBox(56, 0, 35, 15);
+        oled.setDrawColor(1);
+        oled.drawStr(56, 15, "ALTS");
+        oled.sendBuffer();
+        delay(500);
+
+        count++;
+    }
     altsFlashed = 1;
-    oled.sendBuffer();
 }
 
 void MF_OLED_SSD1322::flash(const char *modeName)
@@ -312,33 +310,36 @@ void MF_OLED_SSD1322::display(char *string)
     /*
     Read all AP modes and values from MF LCD string output
     */
-    int   ap                = atoi(strtok(string, "|")); // MF string - #
-    int   fd                = atoi(strtok(NULL, "|"));   // MF string - !
-    int   yd                = atoi(strtok(NULL, "|"));   // MF string - ?
-    int   hdg               = atoi(strtok(NULL, "|"));   // MF string - @
-    int   nav               = atoi(strtok(NULL, "|"));   // MF string - A
-    int   apr               = atoi(strtok(NULL, "|"));   // MF string - B
-    int   bc                = atoi(strtok(NULL, "|"));   // MF string - C
-    int   vs                = atoi(strtok(NULL, "|"));   // MF string - D
-    char *vsValStr          = strtok(NULL, "|");         // //MF string - E. vs value string for display
-    int   vsValInt          = atoi(vsValStr);            // vs value as int for calculations
-    int   ias               = atoi(strtok(NULL, "|"));   // MF string - F
-    char *iasValStr         = strtok(NULL, "|");         // //MF string - G. ias value string for display
-    int   iasValInt         = atoi(iasValStr);           // ias value as int for calculations
-    int   alt               = atoi(strtok(NULL, "|"));   // MF string - H
-    char *altValStr         = strtok(NULL, "|");         // //MF string - I. vs value string for display
-    int   altValInt         = atoi(altValStr);           // ias value as int for calculations
-    int   lvl               = atoi(strtok(NULL, "|"));   // MF string - J
-    int   rol               = atoi(strtok(NULL, "|"));   // MF string - K
-    int   pit               = atoi(strtok(NULL, "|"));   // MF string - L
-    int   gps               = atoi(strtok(NULL, "|"));   // MF string - M
-    int   loc               = atoi(strtok(NULL, "|"));   // MF string - N
-    int   alts              = atoi(strtok(NULL, "|"));   // MF string - O
-    char *indAltValStr      = strtok(NULL, "|");         // MF String - P
+    int   ap        = atoi(strtok(string, "|")); // MF string - #
+    int   fd        = atoi(strtok(NULL, "|"));   // MF string - !
+    int   yd        = atoi(strtok(NULL, "|"));   // MF string - ?
+    int   hdg       = atoi(strtok(NULL, "|"));   // MF string - @
+    int   nav       = atoi(strtok(NULL, "|"));   // MF string - A
+    int   apr       = atoi(strtok(NULL, "|"));   // MF string - B
+    int   bc        = atoi(strtok(NULL, "|"));   // MF string - C
+    int   vs        = atoi(strtok(NULL, "|"));   // MF string - D
+    char *vsValStr  = strtok(NULL, "|");         // //MF string - E. vs value string for display
+    int   vsValInt  = atoi(vsValStr);            // vs value as int for calculations
+    int   ias       = atoi(strtok(NULL, "|"));   // MF string - F
+    char *iasValStr = strtok(NULL, "|");         // //MF string - G. ias value string for display
+    int   iasValInt = atoi(iasValStr);           // ias value as int for calculations
+    int   alt       = atoi(strtok(NULL, "|"));   // MF string - H
+    char *altValStr = strtok(NULL, "|");         // //MF string - I. vs value string for display
+    int   altValInt = atoi(altValStr);           // ias value as int for calculations
+    int   lvl       = atoi(strtok(NULL, "|"));   // MF string - J
+    int   rol       = atoi(strtok(NULL, "|"));   // MF string - K
+    int   pit       = atoi(strtok(NULL, "|"));   // MF string - L
+    int   gps       = atoi(strtok(NULL, "|"));   // MF string - M
+    int   loc       = atoi(strtok(NULL, "|"));   // MF string - N
+
+    char *indAltValStr      = strtok(NULL, "|"); // MF String - P
     int   indAltValInt      = atoi(indAltValStr);
     int   vorReception      = atoi(strtok(NULL, "|"));
     int   avionics          = atoi(strtok(NULL, "|")); // MF string - R
     int   contButtonPressed = atoi(strtok(NULL, "|")); // MF string - S
+    int   alts              = atoi(strtok(NULL, "|")); // MF string - O
+
+    // bool alts = (alt || vs || ias || pit) && (((altValInt - indAltValInt < 400) && ((altValInt - indAltValInt > 51) || (altValInt - indAltValInt > -400)) && (altValInt - indAltValInt < -51)));
 
     /*
 Some AP logic
@@ -350,7 +351,6 @@ Some AP logic
     bool navGpsActive = (!rol && !hdg) && (nav || apr) && gps; // NAV GPS is active
     bool navVorActive = (!rol && !hdg) && nav && !gps && !loc; // NAV VOR is active
     bool navGpsGp     = gps && apr && !pit;
-    bool altsActive   = (alt || ias || vs) && alts;
 
     bool negative3DigitsVs = vsValInt < 0 && vsValInt > -999;
     bool negative4DigitsVs = vsValInt < -999;
@@ -379,72 +379,7 @@ Some AP logic
         oled.clearBuffer();              // refresh the display
         oled.drawLine(52, 11, 52, 57);   // draws the boundary line of the lateral modes
         oled.drawLine(162, 11, 162, 57); // draws the boundary line of the vertical modes
-        /*
-    VERTICAL MODES DISPLAY
-        */
-        if (vs) { // VS MODE
-            drawVs();
 
-            if (negative3DigitsVs) {
-                drawNegative3DigitsVs(vsValInt);
-            }
-
-            else if (negative4DigitsVs) { // 4 digits negative VS value
-                drawNegative4DigitsVs(vsValInt);
-
-            }
-
-            else if (positive3DigitsVs) { // 3 digits positive VS value
-                drawPositive3DigitsVs(vsValInt);
-            }
-
-            else if (positive4DigitsVs) { // 4 digits positive VS value
-                drawPositive4DigitsVs(vsValInt);
-            }
-
-            else if (vsZero) { // if VS is 0, no arrow needed
-                drawVsZero(vsValInt);
-            }
-            drawFpm();
-            drawSmallAlts();
-        }
-
-        if (ias) { // IAS/FLC MODE
-            drawIas();
-            oled.drawStr(136, 15, iasValStr);
-            drawKts();
-            drawSmallAlts();
-        }
-
-        if (pit) { // PITCH MODE
-            drawPit();
-            drawSmallAlts();
-        }
-
-        if (alt && !alts) { // ALT HOLD MODE
-            drawBigAlt();
-            oled.drawStr(120, 15, indAltValStr);
-            drawSmallFt();
-        }
-
-        if (alts) { // ALT CAPTURE MODE
-            drawBigAlts();
-            oled.drawStr(120, 15, altValStr);
-            drawSmallAlt();
-        }
-
-        if (navGpsGp) { // GPS GP MODE
-            drawBigGp();
-        }
-
-        if (lvl) { // LVL vertical mode
-            drawLvlVer();
-        }
-
-        if (!alts) // resets the ALTS flash flag
-        {
-            altsFlashed = 0;
-        }
         /*
         LATERAL MODES DISPLAY
         */
@@ -483,6 +418,84 @@ Some AP logic
 
         if (navVorActive) { // VOR navigation is active
             drawBigVor();
+        }
+
+        /*
+VERTICAL MODES DISPLAY
+*/
+
+        if (vs) { // VS MODE
+            drawVs();
+
+            if (negative3DigitsVs) {
+                drawNegative3DigitsVs(vsValInt);
+            }
+
+            else if (negative4DigitsVs) { // 4 digits negative VS value
+                drawNegative4DigitsVs(vsValInt);
+
+            }
+
+            else if (positive3DigitsVs) { // 3 digits positive VS value
+                drawPositive3DigitsVs(vsValInt);
+            }
+
+            else if (positive4DigitsVs) { // 4 digits positive VS value
+                drawPositive4DigitsVs(vsValInt);
+            }
+
+            else if (vsZero) { // if VS is 0, no arrow needed
+                drawVsZero(vsValInt);
+            }
+            drawFpm();
+            drawSmallAlts();
+            altsFlashed = 0;
+        }
+
+        else if (ias) { // IAS/FLC MODE
+            drawIas();
+            oled.drawStr(136, 15, iasValStr);
+            drawKts();
+            drawSmallAlts();
+            altsFlashed = 0;
+        }
+
+        else if (pit) { // PITCH MODE
+            drawPit();
+            drawSmallAlts();
+            altsFlashed = 0;
+        } else if (navGpsGp) { // GPS GP MODE
+            drawBigGp();
+        }
+
+        else if (lvl) { // LVL vertical mode
+            drawLvlVer();
+        }
+
+        else if (alt && !alts) { // ALT HOLD MODE
+            drawBigAlt();
+            oled.drawStr(120, 15, indAltValStr);
+            drawSmallFt();
+            altsFlashed = 0;
+        }
+
+        else if (alts && !altsFlashed) { // ALT CAPTURE MODE
+            drawBigAlts();
+            oled.drawStr(120, 15, altValStr);
+            drawSmallAlt();
+            drawSmallFt();
+            altsFlash();
+            altsFlashed = 1;
+        }
+
+        else if (alts && altsFlashed) {
+            { // ALT CAPTURE MODE
+                drawBigAlts();
+                oled.drawStr(120, 15, altValStr);
+                drawSmallFt();
+                drawSmallAlt();
+                altsFlashed = 1;
+            }
         }
     } // end of avionics and init done
 
