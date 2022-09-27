@@ -28,6 +28,7 @@ public:
     uint8_t fdLed       = 26;
     uint8_t ydLed       = 28;
     bool    altsFlashed = 0;
+    bool    wasApOn     = 0;
 
     void begin();
     void attach(int8_t cs, int8_t dc, int8_t rst);
@@ -51,7 +52,6 @@ public:
     void drawSmallAlt();
     void drawBigAlt();
     void drawBigGps();
-    void flash(const char *modeName);
     void drawSmallLoc();
     void drawSmallGps();
     void setLargeFont();
@@ -68,4 +68,8 @@ public:
     void drawVsZero(int vsValInt);
     void preFlightTest();
     void altsFlash();
+    void apLedYellow(uint8_t state);
+    void apLedRed();
+    void apLedGreen();
+    void apLedOff();
 };

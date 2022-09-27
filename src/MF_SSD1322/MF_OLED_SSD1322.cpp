@@ -266,6 +266,7 @@ void MF_OLED_SSD1322 ::preFlightTest()
     initSeqDone = 1;
 }
 
+
 void MF_OLED_SSD1322::altsFlash()
 {
     uint8_t count = 0;
@@ -291,18 +292,40 @@ void MF_OLED_SSD1322::altsFlash()
     altsFlashed = 1;
 }
 
-void MF_OLED_SSD1322::flash(const char *modeName)
+void MF_OLED_SSD1322::apLedYellow(uint8_t state)
 {
+    if (state == 1) {
+        analogWrite(apRedLed, 255);
+        analogWrite(apGreenLed, 255);
+        analogWrite(apBlueLed, 0);
+    }
 
-    oled.drawStr(6, 15, "");
-    oled.updateDisplayArea(0, 0, 15, 15);
-    delay(500);
-    oled.drawStr(6, 15, modeName);
-    oled.updateDisplayArea(0, 0, 15, 15);
-    delay(500);
-    oled.drawStr(6, 15, "");
-    oled.updateDisplayArea(0, 0, 15, 15);
-    delay(500);
+    else {
+        analogWrite(apRedLed, 0);
+        analogWrite(apGreenLed, 0);
+        analogWrite(apBlueLed, 0);
+    }
+}
+
+void MF_OLED_SSD1322::apLedRed()
+{
+    analogWrite(apRedLed, 255);
+    analogWrite(apGreenLed, 0);
+    analogWrite(apBlueLed, 0);
+}
+
+void MF_OLED_SSD1322::apLedGreen()
+{
+    analogWrite(apRedLed, 0);
+    analogWrite(apGreenLed, 255);
+    analogWrite(apBlueLed, 0);
+}
+
+void MF_OLED_SSD1322::apLedOff()
+{
+    analogWrite(apRedLed, 0);
+    analogWrite(apGreenLed, 0);
+    analogWrite(apBlueLed, 0);
 }
 
 void MF_OLED_SSD1322::display(char *string)
@@ -381,6 +404,48 @@ Some AP logic
         oled.drawLine(162, 11, 162, 57); // draws the boundary line of the vertical modes
 
         /*
+        AP,YD,FD MODES INDICATIOS:
+        */
+
+        if (ap) {
+            wasApOn = 1;
+            analogWrite(apGreenLed, 255);
+        }
+
+        else if (!ap && wasApOn) {
+            uint8_t       ledState       = 0;
+            unsigned long previousMillis = 0;
+            const long    interval       = 500;
+            uint8_t       apFlashCount   = 0;
+
+            while (apFlashCount < 10) {
+                unsigned long currentMillis = millis();
+                if (currentMillis - previousMillis >= interval) {
+                    // save the last time you blinked the LED
+
+                    if (ledState == 0) {
+                        ledState = 1;
+                    }
+
+                    else {
+                        ledState = 0;
+                    }
+
+                    apLedYellow(ledState);
+
+                    previousMillis = currentMillis;
+                    apFlashCount++;
+                }
+            }
+
+            apLedOff();
+        }
+
+        else {
+            analogWrite(apGreenLed, 0);
+        }
+
+        /*
         LATERAL MODES DISPLAY
         */
 
@@ -421,8 +486,8 @@ Some AP logic
         }
 
         /*
-VERTICAL MODES DISPLAY
-*/
+    VERTICAL MODES DISPLAY
+    */
 
         if (vs) { // VS MODE
             drawVs();
