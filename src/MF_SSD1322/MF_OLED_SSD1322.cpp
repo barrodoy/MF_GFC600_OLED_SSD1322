@@ -559,7 +559,7 @@ Some AP logic
 
         else if (alt && !alts) { // ALT HOLD MODE
             drawBigAlt();
-            oled.setCursor(126, 15);
+            oled.setCursor(130, 15);
             oled.print(roundAlt);
             // oled.drawStr(120, 15, indAltValStr);
             drawSmallFt();
@@ -572,7 +572,7 @@ Some AP logic
             oled.drawStr(120, 15, altValStr);
             drawSmallAlt();
             drawSmallFt();
-            altsFlash();
+            // altsFlash();
             altsFlashed = 1;
             oled.sendBuffer();
         }
@@ -591,4 +591,5 @@ Some AP logic
 
     // push data to display
     oled.sendBuffer();
+    delay(50);
 } // end of Display function
