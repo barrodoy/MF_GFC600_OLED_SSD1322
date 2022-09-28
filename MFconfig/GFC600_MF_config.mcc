@@ -35,7 +35,7 @@
           <line>#|!|?|@|A|B|C|D|</line>
           <line>EEEEE|F|GGG|H|IIIII|</line>
           <line>J|K|L|M|N|PPPPP|Q|</line>
-          <line>R|S|O|</line>
+          <line>R|S|O|TTTTT|</line>
         </display>
         <preconditions />
         <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
@@ -63,6 +63,7 @@
           <configref active="True" ref="424e3296-e09c-40c9-8af0-00229f8788d5" placeholder="R" />
           <configref active="True" ref="76305c50-0b91-4b15-b1c8-9a9dbd0767f5" placeholder="S" />
           <configref active="True" ref="84298d1d-e2f7-4dcb-a033-0706fbd870d6" placeholder="O" />
+          <configref active="True" ref="c6333fc7-a6fc-4601-9515-27a9eaeba369" placeholder="T" />
         </configrefs>
       </settings>
     </config>
@@ -275,6 +276,7 @@
           <value x="0" y="0" />
           <value x="50" y="0" />
           <value x="51" y="1" />
+          <value x="399" y="1" />
           <value x="400" y="1" />
           <value x="401" y="0" />
         </interpolation>
@@ -294,7 +296,7 @@
         <comparison active="False" value="" operand="" ifValue="" elseValue="" />
         <display type="" serial="MobiFlight Mega/ SN-e85-581" trigger="normal" pin="" pinBrightness="255" />
         <preconditions />
-        <transformation active="True" expression="Round($/100,0)*100" substrStart="0" substrEnd="7" />
+        <transformation active="False" expression="Round($/100,0)*100" substrStart="0" substrEnd="7" />
         <configrefs />
       </settings>
     </config>
@@ -304,10 +306,12 @@
       <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.5.0.0, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
         <source type="SimConnect" VarType="LVAR" Value="" />
         <comparison active="False" value="" operand="" ifValue="" elseValue="" />
-        <display type="" serial="" pin="" pinBrightness="255" />
+        <display type="" serial="MobiFlight Mega/ SN-e85-581" trigger="normal" pin="" pinBrightness="255" />
         <preconditions />
-        <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
-        <configrefs />
+        <transformation active="True" expression="Round(#/100,0)*100" substrStart="0" substrEnd="7" />
+        <configrefs>
+          <configref active="True" ref="e496cec8-726d-444c-8e6e-8c823e4760ca" placeholder="#" />
+        </configrefs>
       </settings>
     </config>
     <config guid="bf109029-228e-42a6-a905-8917b1f6eca6">

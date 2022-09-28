@@ -40,7 +40,7 @@ void MF_OLED_SSD1322::setLargeFont()
 
 void MF_OLED_SSD1322::setSmallFont()
 {
-    oled.setFont(u8g2_font_profont12_tf);
+    oled.setFont(u8g2_font_profont12_mr);
 }
 
 void MF_OLED_SSD1322::setSymbolsFont()
@@ -266,28 +266,45 @@ void MF_OLED_SSD1322 ::preFlightTest()
     initSeqDone = 1;
 }
 
-
 void MF_OLED_SSD1322::altsFlash()
 {
-    uint8_t count = 0;
+    uint8_t       altsFlashState          = 0;
+    unsigned long altsFlashPreviousMillis = 0;
+    const long    altsFlashInterval       = 500;
+    uint8_t       altsFlashCount          = 0;
 
-    while (count < 4) {
-        setLargeFont();
-        oled.setDrawColor(1);
-        oled.drawBox(56, 0, 35, 15);
-        oled.setDrawColor(0);
-        oled.drawStr(56, 15, "ALTS");
-        oled.sendBuffer();
-        delay(500);
+    while (altsFlashCount < 10) {
+        unsigned long altsFlashCurrentMillis = millis();
+        if (altsFlashCurrentMillis - altsFlashPreviousMillis >= altsFlashInterval) {
 
-        oled.setDrawColor(0);
-        oled.drawBox(56, 0, 35, 15);
-        oled.setDrawColor(1);
-        oled.drawStr(56, 15, "ALTS");
-        oled.sendBuffer();
-        delay(500);
+            if (altsFlashState == 0) {
+                altsFlashState = 1;
+            }
 
-        count++;
+            else {
+                altsFlashState = 0;
+            }
+
+            if (altsFlashState == 1) {
+                setLargeFont();
+                oled.setDrawColor(1);
+                oled.drawBox(56, 0, 35, 15);
+                oled.setDrawColor(0);
+                oled.drawStr(56, 15, "ALTS");
+                oled.sendBuffer();
+            }
+
+            else {
+                oled.setDrawColor(0);
+                oled.drawBox(56, 0, 35, 15);
+                oled.setDrawColor(1);
+                oled.drawStr(56, 15, "ALTS");
+                oled.sendBuffer();
+            }
+            altsFlashPreviousMillis = altsFlashCurrentMillis;
+            altsFlashCount++;
+            // save the last time you blinked the LED
+        }
     }
     altsFlashed = 1;
 }
@@ -361,6 +378,7 @@ void MF_OLED_SSD1322::display(char *string)
     int   avionics          = atoi(strtok(NULL, "|")); // MF string - R
     int   contButtonPressed = atoi(strtok(NULL, "|")); // MF string - S
     int   alts              = atoi(strtok(NULL, "|")); // MF string - O
+    int   roundAlt          = atoi(strtok(NULL, "|")); // MF string - T
 
     // bool alts = (alt || vs || ias || pit) && (((altValInt - indAltValInt < 400) && ((altValInt - indAltValInt > 51) || (altValInt - indAltValInt > -400)) && (altValInt - indAltValInt < -51)));
 
@@ -413,36 +431,38 @@ Some AP logic
         }
 
         else if (!ap && wasApOn) {
-            uint8_t       ledState       = 0;
-            unsigned long previousMillis = 0;
-            const long    interval       = 500;
-            uint8_t       apFlashCount   = 0;
+            uint8_t       yellowLedState            = 0;
+            unsigned long yellowFlashPreviousMillis = 0;
+            const long    yellowFlashInterval       = 500;
+            uint8_t       apYellowFlashCount        = 0;
 
-            while (apFlashCount < 10) {
-                unsigned long currentMillis = millis();
-                if (currentMillis - previousMillis >= interval) {
+            while (apYellowFlashCount < 10) {
+                unsigned long yellowFlashCurrentMillis = millis();
+                if (yellowFlashCurrentMillis - yellowFlashPreviousMillis >= yellowFlashInterval) {
                     // save the last time you blinked the LED
 
-                    if (ledState == 0) {
-                        ledState = 1;
+                    if (yellowLedState == 0) {
+                        yellowLedState = 1;
                     }
 
                     else {
-                        ledState = 0;
+                        yellowLedState = 0;
                     }
 
-                    apLedYellow(ledState);
+                    apLedYellow(yellowLedState);
 
-                    previousMillis = currentMillis;
-                    apFlashCount++;
+                    yellowFlashPreviousMillis = yellowFlashCurrentMillis;
+                    apYellowFlashCount++;
                 }
             }
 
             apLedOff();
+            wasApOn = 0;
         }
 
         else {
             analogWrite(apGreenLed, 0);
+            wasApOn = 0;
         }
 
         /*
@@ -539,9 +559,12 @@ Some AP logic
 
         else if (alt && !alts) { // ALT HOLD MODE
             drawBigAlt();
-            oled.drawStr(120, 15, indAltValStr);
+            oled.setCursor(126, 15);
+            oled.print(roundAlt);
+            // oled.drawStr(120, 15, indAltValStr);
             drawSmallFt();
             altsFlashed = 0;
+            oled.sendBuffer();
         }
 
         else if (alts && !altsFlashed) { // ALT CAPTURE MODE
@@ -551,6 +574,7 @@ Some AP logic
             drawSmallFt();
             altsFlash();
             altsFlashed = 1;
+            oled.sendBuffer();
         }
 
         else if (alts && altsFlashed) {
@@ -560,6 +584,7 @@ Some AP logic
                 drawSmallFt();
                 drawSmallAlt();
                 altsFlashed = 1;
+                oled.sendBuffer();
             }
         }
     } // end of avionics and init done

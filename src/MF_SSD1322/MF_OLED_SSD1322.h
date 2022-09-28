@@ -72,4 +72,5 @@ public:
     void apLedRed();
     void apLedGreen();
     void apLedOff();
+    void apLedYellowFlash();
 };
