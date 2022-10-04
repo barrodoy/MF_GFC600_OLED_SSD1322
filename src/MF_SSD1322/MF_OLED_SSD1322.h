@@ -21,14 +21,19 @@ public:
     // ************************************
     // **** GLOBAL & UNIVERSAL METHODS ***
     // ********
-    uint8_t initSeqDone = 0;
-    uint8_t apRedLed    = 44;
-    uint8_t apGreenLed  = 45;
-    uint8_t apBlueLed   = 46;
-    uint8_t fdLed       = 26;
-    uint8_t ydLed       = 28;
-    bool    altsFlashed = 0;
-    bool    wasApOn     = 0;
+    uint8_t       initSeqDone             = 0;
+    uint8_t       apRedLed                = 44;
+    uint8_t       apGreenLed              = 45;
+    uint8_t       apBlueLed               = 46;
+    uint8_t       fdLed                   = 26;
+    uint8_t       ydLed                   = 28;
+    uint8_t       altsFlashEnable         = 1;
+    uint8_t       altsFlashState          = 0;
+    unsigned long altsFlashPreviousMillis = 0;
+    unsigned long altsFlashInterval       = 500;
+    uint8_t       altsFlashCount          = 0;
+    bool          wasApOn                 = 0;
+    unsigned long CurrentMillis           = millis();
 
     void begin();
     void attach(int8_t cs, int8_t dc, int8_t rst);

@@ -306,7 +306,7 @@ void MF_OLED_SSD1322::altsFlash()
             // save the last time you blinked the LED
         }
     }
-    altsFlashed = 1;
+    altsFlashEnable = 1;
 }
 
 void MF_OLED_SSD1322::apLedYellow(uint8_t state)
@@ -534,7 +534,7 @@ Some AP logic
             }
             drawFpm();
             drawSmallAlts();
-            altsFlashed = 0;
+            altsFlashEnable = 1;
         }
 
         else if (ias) { // IAS/FLC MODE
@@ -542,13 +542,13 @@ Some AP logic
             oled.drawStr(136, 15, iasValStr);
             drawKts();
             drawSmallAlts();
-            altsFlashed = 0;
+            altsFlashEnable = 1;
         }
 
         else if (pit) { // PITCH MODE
             drawPit();
             drawSmallAlts();
-            altsFlashed = 0;
+            altsFlashEnable = 1;
         } else if (navGpsGp) { // GPS GP MODE
             drawBigGp();
         }
@@ -563,33 +563,58 @@ Some AP logic
             oled.print(roundAlt);
             // oled.drawStr(120, 15, indAltValStr);
             drawSmallFt();
-            altsFlashed = 0;
-            oled.sendBuffer();
+            altsFlashEnable = 1;
+
         }
 
-        else if (alts && !altsFlashed) { // ALT CAPTURE MODE
+        else if (alts && altsFlashEnable) { // ALT CAPTURE MODE
             drawBigAlts();
             oled.drawStr(120, 15, altValStr);
             drawSmallAlt();
             drawSmallFt();
-            // altsFlash();
-            altsFlashed = 1;
-            oled.sendBuffer();
+            Serial.println(CurrentMillis);
+            if (CurrentMillis - altsFlashPreviousMillis >= altsFlashInterval) {
+                if (altsFlashState == 0) {
+                    setLargeFont();
+                    oled.setDrawColor(1);
+                    oled.drawBox(56, 0, 35, 15);
+                    oled.setDrawColor(0);
+                    oled.drawStr(56, 15, "ALTS");
+                    altsFlashCount++;
+                    altsFlashState = 1;
+                }
+
+                else {
+                    setLargeFont();
+                    oled.setDrawColor(0);
+                    oled.drawBox(56, 0, 35, 15);
+                    oled.setDrawColor(1);
+                    oled.drawStr(56, 15, "ALTS");
+                    oled.setDrawColor(0);
+                    altsFlashCount++;
+                    altsFlashState = 0;
+                }
+                altsFlashPreviousMillis = CurrentMillis;
+            }
+
+            if (altsFlashCount >= 5) {
+                altsFlashCount = 0;
+            }
+
         }
 
-        else if (alts && altsFlashed) {
+        else if (alts && !altsFlashEnable) {
             { // ALT CAPTURE MODE
                 drawBigAlts();
                 oled.drawStr(120, 15, altValStr);
                 drawSmallFt();
                 drawSmallAlt();
-                altsFlashed = 1;
-                oled.sendBuffer();
+                altsFlashEnable = 0;
             }
         }
     } // end of avionics and init done
 
     // push data to display
     oled.sendBuffer();
-    delay(50);
+
 } // end of Display function
