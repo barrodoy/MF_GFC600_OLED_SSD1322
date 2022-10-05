@@ -359,13 +359,13 @@ void MF_OLED_SSD1322::display(char *string)
     uint8_t bc        = atoi(strtok(NULL, "|"));   // MF string - C
     uint8_t vs        = atoi(strtok(NULL, "|"));   // MF string - D
     char   *vsValStr  = strtok(NULL, "|");         // //MF string - E. vs value string for display
-    uint8_t vsValInt  = atoi(vsValStr);            // vs value as int for calculations
-    uint8_t ias       = atoi(strtok(NULL, "|"));   // MF string - F
+    int     vsValInt  = atoi(vsValStr);            // vs value as int for calculations
+    int     ias       = atoi(strtok(NULL, "|"));   // MF string - F
     char   *iasValStr = strtok(NULL, "|");         // //MF string - G. ias value string for display
-    uint8_t iasValInt = atoi(iasValStr);           // ias value as int for calculations
-    uint8_t alt       = atoi(strtok(NULL, "|"));   // MF string - H
+    int     iasValInt = atoi(iasValStr);           // ias value as int for calculations
+    int     alt       = atoi(strtok(NULL, "|"));   // MF string - H
     char   *altValStr = strtok(NULL, "|");         // //MF string - I. vs value string for display
-    uint8_t altValInt = atoi(altValStr);           // ias value as int for calculations
+    int     altValInt = atoi(altValStr);           // ias value as int for calculations
     uint8_t lvl       = atoi(strtok(NULL, "|"));   // MF string - J
     uint8_t rol       = atoi(strtok(NULL, "|"));   // MF string - K
     uint8_t pit       = atoi(strtok(NULL, "|"));   // MF string - L
@@ -378,8 +378,8 @@ void MF_OLED_SSD1322::display(char *string)
     uint8_t avionics          = atoi(strtok(NULL, "|")); // MF string - R
     uint8_t contButtonPressed = atoi(strtok(NULL, "|")); // MF string - S
     uint8_t alts              = atoi(strtok(NULL, "|")); // MF string - O
-    uint8_t roundAlt          = atoi(strtok(NULL, "|")); // MF string - T
-    uint8_t simTime           = atoi(strtok(NULL, "|")); // MF string - U
+    int     roundAlt          = atoi(strtok(NULL, "|")); // MF string - T
+    // uint8_t simTime           = atoi(strtok(NULL, "|")); // MF string - U
 
     // bool alts = (alt || vs || ias || pit) && (((altValInt - indAltValInt < 400) && ((altValInt - indAltValInt > 51) || (altValInt - indAltValInt > -400)) && (altValInt - indAltValInt < -51)));
 
@@ -619,5 +619,6 @@ Some AP logic
 
     // push data to display
     oled.sendBuffer();
+    delay(100);
 
 } // end of Display function

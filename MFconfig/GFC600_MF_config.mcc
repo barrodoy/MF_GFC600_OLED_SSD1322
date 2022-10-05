@@ -35,7 +35,7 @@
           <line>#|!|?|@|A|B|C|D|</line>
           <line>EEEEE|F|GGG|H|IIIII|</line>
           <line>J|K|L|M|N|PPPPP|Q|</line>
-          <line>R|S|O|TTTTT|U|</line>
+          <line>R|S|O|TTTTT|</line>
         </display>
         <preconditions />
         <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
@@ -64,7 +64,7 @@
           <configref active="True" ref="76305c50-0b91-4b15-b1c8-9a9dbd0767f5" placeholder="S" />
           <configref active="True" ref="84298d1d-e2f7-4dcb-a033-0706fbd870d6" placeholder="O" />
           <configref active="True" ref="c6333fc7-a6fc-4601-9515-27a9eaeba369" placeholder="T" />
-          <configref active="True" ref="2e3124b5-7d99-467e-bebd-e9a0c013befd" placeholder="" />
+          <configref active="False" ref="2e3124b5-7d99-467e-bebd-e9a0c013befd" placeholder="U" />
         </configrefs>
       </settings>
     </config>
