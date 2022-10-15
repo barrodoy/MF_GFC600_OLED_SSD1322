@@ -577,23 +577,15 @@ Some AP logic
             if (millis() - altsFlashPreviousMillis >= altsFlashInterval) {
                 if (altsFlashState == 1) {
                     setLargeFont();
-                    oled.setDrawColor(1);         // black
-                    oled.drawBox(56, 0, 35, 15);  // black box
-                    oled.setDrawColor(0);         // white
                     oled.drawStr(56, 15, "ALTS"); // white text
-                    oled.setDrawColor(1);         // black
-                    oled.drawBox(56, 0, 35, 15);
                     altsFlashCount++;
                     altsFlashState = 1;
                 }
 
                 else {
                     setLargeFont();
-                    oled.setDrawColor(0);         // white
-                    oled.drawBox(56, 0, 35, 15);  // white box
-                    oled.setDrawColor(1);         // black
-                    oled.drawStr(56, 15, "ALTS"); // black text
-                    oled.drawBox(56, 0, 35, 15);  // black box
+                    setLargeFont();
+                    oled.drawStr(56, 15, ""); // black text
                     altsFlashCount++;
                     altsFlashState = 0;
                 }
