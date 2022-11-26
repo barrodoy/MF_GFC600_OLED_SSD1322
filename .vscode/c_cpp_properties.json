@@ -78,7 +78,7 @@
             },
             "defines": [
                 "BUILD_VERSION=0.0.1",
-                "PLATFORMIO=60104",
+                "PLATFORMIO=60105",
                 "ARDUINO_AVR_MEGA2560",
                 "MF_REDUCE_FUNCT_LEDCONTROL",
                 "MAXCALLBACKS=30",

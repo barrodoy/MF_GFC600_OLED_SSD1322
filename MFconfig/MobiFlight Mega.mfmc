@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ModuleName>MobiFlight Mega</ModuleName>
+  <PowerSavingTime>600</PowerSavingTime>
+  <MultiplexerDriver Name="MultiplexerDriver" PinSx="36 37 38 39" />
+  <LcdDisplay Name="LcdDisplay" Address="63" Cols="20" Lines="4" />
+  <Encoder Name="VS Encoder" PinLeft="30" PinRight="31" EncoderType="0" />
+  <Output Name="BackLight" Pin="3" />
+  <Button Name="Hdg SW" Pin="44" />
+  <AnalogInput Name="Pot" Pin="54" Sensitivity="1" />
+  <InputMultiplexer Name="Multiplexer" DataPin="40" NumBytes="2">
+    <Selector Name="MultiplexerDriver" PinSx="36 37 38 39" />
+  </InputMultiplexer>
+</Config>

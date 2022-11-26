@@ -45,7 +45,7 @@ void MF_OLED_SSD1322::setSmallFont()
 
 void MF_OLED_SSD1322::setSymbolsFont()
 {
-    oled.setFont(u8g2_font_9x15_t_symbols);
+    oled.setFont(u8g2_font_9x15_m_symbols);
 }
 
 void MF_OLED_SSD1322::drawPit()
@@ -84,12 +84,25 @@ void MF_OLED_SSD1322::drawVs()
     oled.drawStr(56, 15, "VS"); // if VS mode is on, print "VS"
 } // end of drawVs method
 
+void MF_OLED_SSD1322::drawBigGs()
+{
+    setLargeFont();
+    oled.drawStr(56, 15, "GS"); // if GS mode is on, print "VS"
+} // end of drawVs method
+
 void MF_OLED_SSD1322::drawFpm()
 {
     setSmallFont();
     oled.drawStr(142, 25, "FPM"); // if VS mode is on print "FPM" in a smaller font below the VS value display
     setLargeFont();
 } // end of drawFpm method
+
+void MF_OLED_SSD1322::drawSmallGs()
+{
+    setSmallFont();
+    oled.drawStr(142, 40, "GS"); // if VS mode is on print "FPM" in a smaller font below the VS value display
+    setLargeFont();
+}
 
 void MF_OLED_SSD1322::drawIas()
 {
@@ -108,6 +121,7 @@ void MF_OLED_SSD1322::drawSmallVor()
 {
     setSmallFont();
     oled.drawStr(6, 57, "VOR"); // if VS mode is on, print "VS"
+    setLargeFont();
 } // end of drawSmallVor method
 
 void MF_OLED_SSD1322::drawBigVor()
@@ -154,6 +168,12 @@ void MF_OLED_SSD1322::drawBigGps()
     oled.drawStr(6, 15, "GPS"); // if ALT mode is on, print "ALT"
 } // end of drawBigGps method
 
+void MF_OLED_SSD1322::drawBigLoc()
+{
+    setLargeFont();
+    oled.drawStr(6, 15, "LOC"); // if LOC mode is on, print "LOC"
+} // end of drawBigLoc method
+
 void MF_OLED_SSD1322::drawSmallLoc()
 {
     setSmallFont();
@@ -191,14 +211,14 @@ void MF_OLED_SSD1322::drawBigPft()
 void MF_OLED_SSD1322::drawInitScreen()
 {
     oled.setFont(u8g2_font_tenfatguys_tf);
-    oled.drawStr(92, 15, "GFC600");
-    oled.setFont(u8g2_font_tenthinguys_tr);
-    oled.drawStr(34, 28, "WITH ELECTRONIC STABILITY");
-    oled.drawStr(79, 42, "AND PROTECTION");
-    oled.setFont(u8g2_font_profont15_mf);
-    oled.drawStr(6, 56, "CONT");
+    oled.drawStr(88, 15, "GFC600");
+    oled.setFont(u8g2_font_7x14B_tf);
+    oled.drawStr(30, 36, "WITH ELECTRONIC STABILITY");
+    oled.drawStr(75, 50, "AND PROTECTION");
+    // oled.setFont(u8g2_font_profont15_mf);
+    oled.drawStr(18, 56, "CONT.");
     setSymbolsFont();
-    oled.drawStr(1, 56, "↙ ");
+    oled.drawUTF8(1, 56, "↙");
 }
 
 void MF_OLED_SSD1322::drawNegative3DigitsVs(int vsValInt)
@@ -350,6 +370,7 @@ void MF_OLED_SSD1322::display(char *string)
     /*
     Read all AP modes and values from MF LCD string output
     */
+
     uint8_t ap        = atoi(strtok(string, "|")); // MF string - #
     uint8_t fd        = atoi(strtok(NULL, "|"));   // MF string - !
     uint8_t yd        = atoi(strtok(NULL, "|"));   // MF string - ?
@@ -379,7 +400,8 @@ void MF_OLED_SSD1322::display(char *string)
     uint8_t contButtonPressed = atoi(strtok(NULL, "|")); // MF string - S
     uint8_t alts              = atoi(strtok(NULL, "|")); // MF string - O
     int     roundAlt          = atoi(strtok(NULL, "|")); // MF string - T
-    // uint8_t simTime           = atoi(strtok(NULL, "|")); // MF string - U
+    uint8_t gsArmed           = atoi(strtok(NULL, "|")); // MF string - U
+    uint8_t gsApOn            = atoi(strtok(NULL, "|")); // MF string - v
 
     // bool alts = (alt || vs || ias || pit) && (((altValInt - indAltValInt < 400) && ((altValInt - indAltValInt > 51) || (altValInt - indAltValInt > -400)) && (altValInt - indAltValInt < -51)));
 
@@ -392,7 +414,9 @@ Some AP logic
     bool navVappArmed = (rol || hdg) && apr;
     bool navGpsActive = (!rol && !hdg) && (nav || apr) && gps; // NAV GPS is active
     bool navVorActive = (!rol && !hdg) && nav && !gps && !loc; // NAV VOR is active
+    bool navLocActive = (!rol && !hdg) && nav && !gps && loc;  // NAV LOC is active
     bool navGpsGp     = gps && apr && !pit;
+    bool navAppArmed  = apr && gsArmed && !gsApOn;
 
     bool negative3DigitsVs = vsValInt < 0 && vsValInt > -999;
     bool negative4DigitsVs = vsValInt < -999;
@@ -428,9 +452,10 @@ Some AP logic
 
         if (ap) {
             wasApOn = 1;
-            analogWrite(apGreenLed, 255);
+            analogWrite(apGreenLed, 180);
         }
 
+        /*
         else if (!ap && wasApOn) {
             uint8_t       yellowLedState            = 0;
             unsigned long yellowFlashPreviousMillis = 0;
@@ -457,9 +482,10 @@ Some AP logic
                 }
             }
 
-            apLedOff();
-            wasApOn = 0;
-        }
+
+        apLedOff();
+        wasApOn = 0;
+    }*/
 
         else {
             analogWrite(apGreenLed, 0);
@@ -498,12 +524,33 @@ Some AP logic
             }
         }
 
-        if (navGpsActive) { // GPS navigation is active
-            drawBigGps();
+        if (nav) {
+
+            if (navGpsActive) { // GPS navigation is active
+                drawBigGps();
+            }
+
+            else if (navVorActive) { // VOR navigation is active but no LOC
+                drawBigVor();
+            }
+
+            else if (navLocActive) { // VOR navigation is active but with LOC
+                drawBigLoc();
+            }
         }
 
-        if (navVorActive) { // VOR navigation is active
-            drawBigVor();
+        if (apr) {
+            if (navAppArmed) {
+                drawSmallGs();
+            }
+
+            if (gsApOn) {
+                drawBigGs();
+            }
+
+            if (loc) {
+                drawBigLoc();
+            }
         }
 
         /*

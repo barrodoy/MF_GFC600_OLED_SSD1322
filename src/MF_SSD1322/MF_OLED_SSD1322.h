@@ -8,7 +8,7 @@ private:
     // Fields
     int8_t _CS  = 10;
     int8_t _DC  = 9;
-    int8_t _RST = 10;
+    int8_t _RST = 8;
 
     bool _initialised;
 
@@ -23,9 +23,9 @@ public:
     // ********
     uint8_t       initSeqDone             = 0;
     uint8_t       apRedLed                = 44;
-    uint8_t       apGreenLed              = 45;
+    uint8_t       apGreenLed              = 6;
     uint8_t       apBlueLed               = 46;
-    uint8_t       fdLed                   = 26;
+    uint8_t       fdLed                   = 5;
     uint8_t       ydLed                   = 28;
     uint8_t       altsFlashEnable         = 1;
     uint8_t       altsFlashState          = 0;
@@ -46,6 +46,7 @@ public:
     void drawLvlLat();
     void drawLvlVer();
     void drawVs();
+    void drawBigGs();
     void drawFpm();
     void drawIas();
     void drawKts();
@@ -57,7 +58,9 @@ public:
     void drawSmallAlt();
     void drawBigAlt();
     void drawBigGps();
+    void drawBigLoc();
     void drawSmallLoc();
+    void drawSmallGs();
     void drawSmallGps();
     void setLargeFont();
     void setSmallFont();
