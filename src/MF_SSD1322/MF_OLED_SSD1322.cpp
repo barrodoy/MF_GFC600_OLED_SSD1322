@@ -519,7 +519,7 @@ Some AP logic
                 drawSmallGps();
             }
 
-            if (navVappArmed) { // APR navigation is armed in HDG mode
+            if (navVappArmed) { // APR mode is armed in HDG mode
                 drawSmallVapp();
             }
         }
